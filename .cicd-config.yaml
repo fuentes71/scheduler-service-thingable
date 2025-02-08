@@ -1,0 +1,17 @@
+project: mes
+applications:
+  - scheduler-service
+build:
+  container:
+    enabled: true
+  node:
+    enabled: false
+    image: library/node:18.15
+    framework: npm
+test:
+  enabled: false
+  image: cypress/base:20.17.0
+  framework: cypress
+deploy:
+  gitops:
+    enabled: true

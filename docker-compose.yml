@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  scheduler-service-nest-api:
+    container_name: scheduler-service-nest-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run start:dev
+    ports:
+      - 8082:8082
+    networks:
+      - thingable
+    restart: always
+    depends_on:
+      - scheduler-service-pg-db 
+    env_file:
+      - .docker.env
+
+  scheduler-service-pg-db:
+    image: postgres:13
+    container_name: scheduler-service-pg-db
+    environment:
+      POSTGRES_PASSWORD: thingable2025
+      POSTGRES_USER: user
+      POSTGRES_DB: thingable_scheduler_service
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - 5439:5432
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    networks:
+      - thingable
+      
+networks:
+  thingable:
+    external:
+      name: thingable
+
+volumes:
+  postgres:
