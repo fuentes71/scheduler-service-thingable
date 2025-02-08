@@ -2,7 +2,6 @@ import { PrismaClient } from '@prisma/client';
 
 const now = new Date();
 const cronIntervalDefault = {
-  status: 'WAITING_START',
   days_week: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
   hours: 0,
   minutes: 0,

@@ -1,7 +1,6 @@
 -- CreateTable
 CREATE TABLE "cron_interval" (
     "id" TEXT NOT NULL,
-    "status" TEXT NOT NULL,
     "days_week" TEXT[],
     "minutes" INTEGER NOT NULL,
     "hours" INTEGER NOT NULL,
