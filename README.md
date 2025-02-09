@@ -62,36 +62,17 @@ Como instalar e iniciar seu projeto
 ```bash
 npm run install
 ```
-
-2 - Executar arquivos de migração
-
-```bash
-npm run db:migrate
-```
-
-3 - Configurar o Prisma
+2 - Subir containers
 
 ```bash
-npx prisma generate
-```
-
-4 - Executar seeds
-
-```bash
-npm run db:seed
-```
-
-5 - Subir containers
-
-```bash
-docker-compose up
+docker-compose up --build
 ```
 
 ---
 
 <h3 id="routes">📍 Endpoints da API</h3>
 
-A documentação dos endpoints da API pode ser encontrada após executar o projeto e acessar http://localhost:8080/control-service/api/docs.
+A documentação dos endpoints da API pode ser encontrada após executar o projeto e acessar http://localhost:8082/scheduler-service/api/docs.
 
 ---
 

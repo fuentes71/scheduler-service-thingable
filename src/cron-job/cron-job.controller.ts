@@ -10,20 +10,10 @@ export class CronJobController {
   constructor(private readonly cronJobService: CronJobService) { }
   
   @Post()
-  setCronInterval(@Body() cronInterval: CronJobDto) {
-    this.cronJobService.setCronInterval(cronInterval);
+  startCronInterval(@Body() cronInterval: CronJobDto) {
+    this.cronJobService.startCronInterval(cronInterval);
   }
-
-  @Post('/start')
-  startCronInterval() {
-    this.cronJobService.startCronInterval();
-  }
-
-  @Put()
-  stopCronInterval() {
-    this.cronJobService.stopCronInterval();
-  }
-
+  
   @Delete()
   removeCronInterval() {
     this.cronJobService.removeCronInterval();

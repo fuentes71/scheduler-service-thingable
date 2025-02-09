@@ -2,7 +2,6 @@ import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nes
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { ICustomResponseInterceptor } from '../interfaces';
 
 @Injectable()
 export class CustomResponseInterceptor implements NestInterceptor {
@@ -11,12 +10,11 @@ export class CustomResponseInterceptor implements NestInterceptor {
 
     return next.handle().pipe(
       map(data => {
-        const response: ICustomResponseInterceptor = {
+        const response = {
           code: res.statusCode,
           success: true,
           data: data,
         };
-
         return response;
       }),
     );

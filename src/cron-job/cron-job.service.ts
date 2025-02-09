@@ -2,12 +2,11 @@ import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { Client, ClientKafka, Transport } from '@nestjs/microservices';
 import { SchedulerRegistry } from '@nestjs/schedule';
 
-import { Partitioners } from 'kafkajs';
 import { CronJob } from 'cron';
+import { Partitioners } from 'kafkajs';
 
 import { ICustomResponseService } from 'src/shared/interfaces';
 import { CronJobDto } from './dto';
-import { PrismaService } from 'src/prisma/prisma.service';
 
 
 @Injectable()
@@ -36,7 +35,6 @@ export class CronJobService {
 
   constructor(
     private schedulerRegistry: SchedulerRegistry,
-    private prismaService: PrismaService,
   ) { }
 
   async onModuleInit(): Promise<void> {
@@ -48,13 +46,11 @@ export class CronJobService {
     });
   }
 
-  async setCronInterval(cronInterval: CronJobDto): Promise<ICustomResponseService<string>> {
+  async startCronInterval(cronInterval: CronJobDto): Promise<string> {
     const { daysWeek, interval } = cronInterval;
 
     if (interval.hours === 0 && interval.minutes === 0 && interval.seconds === 0)
       throw new BadRequestException('O intervalo não pode ser 0 horas, 0 minutos e 0 segundos.');
-
-    await this.prismaService.cronInterval.deleteMany();
 
     const daysMap: Record<string, number> = {
       Sunday: 0,
@@ -88,42 +84,17 @@ export class CronJobService {
     this.jobs.set(this.jobName, job);
     this.schedulerRegistry.addCronJob(this.jobName, job);
     this.schedulerRegistry.addInterval(this.jobName, job);
-
-    await this.prismaService.cronInterval.create({
-      data: {
-        days_week: daysWeek,
-        hours: interval.hours,
-        minutes: interval.minutes,
-        seconds: interval.seconds,
-      },
-    });
-
-    return { data: 'Cron Job criado com sucesso!' };
-  }
-
-  async startCronInterval(): Promise<ICustomResponseService<string>> {
-    const job = this.jobs.get(this.jobName);
-
-    if (!job) throw new BadRequestException('Cron Job não encontrado.');
-
-    await this.client.emit('cron-job-event', JSON.stringify({ message: `cron job inicializado.` }));
     job.start();
 
-    return { data: 'Cron Job iniciado com sucesso!' };
+    return  'Cron Job criado com sucesso!' ;
   }
 
-  async stopCronInterval(): Promise<ICustomResponseService<string>> {
-    this.jobs.forEach((job) => job.stop());
-    await this.schedulerRegistry.getCronJobs().forEach((job) => job.stop());
-
-    return { data: 'Cron Job parado com sucesso!' };
-  }
-  async removeCronInterval(): Promise<ICustomResponseService<string>> {
+  async removeCronInterval(): Promise<string> {
     this.jobs.clear();
     await this.schedulerRegistry.getCronJobs().forEach((job) => job.stop());
     await this.schedulerRegistry.deleteCronJob(this.jobName)
 
-    return { data: 'Cron Job removido com sucesso!' };
+    return 'Cron Job removido com sucesso!' ;
   }
 
 }

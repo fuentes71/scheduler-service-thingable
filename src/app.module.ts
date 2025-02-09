@@ -6,7 +6,6 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CronJobModule } from './cron-job/cron-job.module';
-import { PrismaModule } from './prisma/prisma.module';
 import { CustomExceptionFilter } from './shared/filters';
 import { CustomResponseInterceptor } from './shared/interceptors';
 import { ApiKeyMiddleware } from './shared/middleware';
@@ -16,7 +15,6 @@ import { ClassValidatorPipe } from './shared/pipes';
   imports: [
     ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
     ScheduleModule.forRoot(),
-    PrismaModule,
     CronJobModule,
   ],
   controllers: [AppController],
