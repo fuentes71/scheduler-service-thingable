@@ -1,4 +1,3 @@
-
 export interface ICustomResponseInterceptor {
   success: boolean;
   code: number;

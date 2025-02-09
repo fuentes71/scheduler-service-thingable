@@ -1,13 +1,10 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { Client, ClientKafka, Transport } from '@nestjs/microservices';
 import { SchedulerRegistry } from '@nestjs/schedule';
-
 import { CronJob } from 'cron';
 import { Partitioners } from 'kafkajs';
 
-import { ICustomResponseService } from 'src/shared/interfaces';
 import { CronJobDto } from './dto';
-
 
 @Injectable()
 export class CronJobService {
@@ -32,10 +29,7 @@ export class CronJobService {
   private jobs: Map<string, CronJob> = new Map();
   private jobName = 'myCronJob';
 
-
-  constructor(
-    private schedulerRegistry: SchedulerRegistry,
-  ) { }
+  constructor(private schedulerRegistry: SchedulerRegistry) {}
 
   async onModuleInit(): Promise<void> {
     const requestPatterns = ['cron-job-event'];
@@ -69,7 +63,7 @@ export class CronJobService {
       this.schedulerRegistry.deleteInterval(this.jobName);
     }
 
-    const intervalInSeconds = (interval.hours * 3600) + (interval.minutes * 60) + interval.seconds;
+    const intervalInSeconds = interval.hours * 3600 + interval.minutes * 60 + interval.seconds;
     const cronExpression = `*/${intervalInSeconds} * * * * ${cronDays}`;
 
     const now = new Date();
@@ -86,15 +80,14 @@ export class CronJobService {
     this.schedulerRegistry.addInterval(this.jobName, job);
     job.start();
 
-    return  'Cron Job criado com sucesso!' ;
+    return 'Cron Job criado com sucesso!';
   }
 
   async removeCronInterval(): Promise<string> {
     this.jobs.clear();
-    await this.schedulerRegistry.getCronJobs().forEach((job) => job.stop());
-    await this.schedulerRegistry.deleteCronJob(this.jobName)
+    await this.schedulerRegistry.getCronJobs().forEach(job => job.stop());
+    await this.schedulerRegistry.deleteCronJob(this.jobName);
 
-    return 'Cron Job removido com sucesso!' ;
+    return 'Cron Job removido com sucesso!';
   }
-
 }

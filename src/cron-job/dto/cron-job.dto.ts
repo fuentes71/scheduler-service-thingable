@@ -1,5 +1,13 @@
 import { Type } from 'class-transformer';
-import { ArrayNotEmpty, IsArray, IsIn, isInt, IsInt, IsObject, IsString, Matches, Min, ValidateNested } from 'class-validator';
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsIn,
+  IsInt,
+  IsObject,
+  Min,
+  ValidateNested
+} from 'class-validator';
 
 class IntervalDTO {
   @IsInt({ message: 'O campo hours deve ser um inteiro.' })
@@ -26,4 +34,3 @@ export class CronJobDto {
   @Type(() => IntervalDTO)
   interval: IntervalDTO;
 }
-

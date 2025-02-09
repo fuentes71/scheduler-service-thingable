@@ -18,8 +18,8 @@ async function bootstrap() {
   app.useGlobalInterceptors(new LoggingInterceptor());
 
   const config = new DocumentBuilder()
-  .setTitle('Documentação da API')
-  .setVersion('1.0')
+    .setTitle('Documentação da API')
+    .setVersion('1.0')
     .addApiKey({ type: 'apiKey', name: 'X-API-Key', in: 'header' }, 'apiKey')
     .build();
 

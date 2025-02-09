@@ -12,11 +12,7 @@ import { ApiKeyMiddleware } from './shared/middleware';
 import { ClassValidatorPipe } from './shared/pipes';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
-    ScheduleModule.forRoot(),
-    CronJobModule,
-  ],
+  imports: [ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }), ScheduleModule.forRoot(), CronJobModule],
   controllers: [AppController],
   providers: [
     AppService,
