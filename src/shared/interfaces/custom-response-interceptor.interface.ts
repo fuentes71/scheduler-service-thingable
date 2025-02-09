@@ -1,6 +1,5 @@
-import { ICustomResponseService } from './custom-response-service.interface';
 
-export interface ICustomResponseInterceptor extends ICustomResponseService<any> {
+export interface ICustomResponseInterceptor {
   success: boolean;
   code: number;
   data: any;
