@@ -77,7 +77,6 @@ export class CronJobService {
     const job = new CronJob(cronExpression, async () => {
       this.logger.log('Cron job programado');
       await this.client.emit('cron-job-event', JSON.stringify({ message: 'cron job em excecução.' }));
-
     });
 
     this.schedulerRegistry.addCronJob(this.jobName, job);
