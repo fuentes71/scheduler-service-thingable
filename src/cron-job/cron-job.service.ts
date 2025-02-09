@@ -67,7 +67,6 @@ export class CronJobService {
     const cronExpression = `*/${intervalInSeconds} * * * * ${cronDays}`;
 
     const now = new Date();
-    const cronDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
     const job = new CronJob(cronExpression, async () => {
       this.logger.log('Cron job em execução...');
@@ -85,7 +84,6 @@ export class CronJobService {
 
   async removeCronInterval(): Promise<string> {
     this.jobs.clear();
-    await this.schedulerRegistry.getCronJobs().forEach(job => job.stop());
     await this.schedulerRegistry.deleteCronJob(this.jobName);
 
     return 'Cron Job removido com sucesso!';
