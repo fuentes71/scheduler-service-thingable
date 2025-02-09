@@ -6,7 +6,6 @@ const cronIntervalDefault = {
   hours: 0,
   minutes: 0,
   seconds: 30,
- 
 };
 
 export async function createCronInterval(prisma: PrismaClient) {

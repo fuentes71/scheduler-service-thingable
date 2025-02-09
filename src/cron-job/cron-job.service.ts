@@ -7,6 +7,7 @@ import { CronJob } from 'cron';
 
 import { ICustomResponseService } from 'src/shared/interfaces';
 import { CronJobDto } from './dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 
 @Injectable()
@@ -30,11 +31,13 @@ export class CronJobService {
   private client: ClientKafka;
   private readonly logger = new Logger(CronJobService.name);
   private jobs: Map<string, CronJob> = new Map();
-
   private jobName = 'myCronJob';
 
 
-  constructor(private schedulerRegistry: SchedulerRegistry) { }
+  constructor(
+    private schedulerRegistry: SchedulerRegistry,
+    private prismaService: PrismaService,
+  ) { }
 
   async onModuleInit(): Promise<void> {
     const requestPatterns = ['cron-job-event'];
@@ -50,6 +53,8 @@ export class CronJobService {
 
     if (interval.hours === 0 && interval.minutes === 0 && interval.seconds === 0)
       throw new BadRequestException('O intervalo não pode ser 0 horas, 0 minutos e 0 segundos.');
+
+    await this.prismaService.cronInterval.deleteMany();
 
     const daysMap: Record<string, number> = {
       Sunday: 0,
@@ -75,15 +80,25 @@ export class CronJobService {
     const cronDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
     const job = new CronJob(cronExpression, async () => {
-      this.logger.log('Cron job programado');
+      this.logger.log('Cron job em execução...');
       await this.client.emit('cron-job-event', JSON.stringify({ message: 'cron job em excecução.' }));
     });
+    this.logger.log('Cron job programado');
 
+    this.jobs.set(this.jobName, job);
     this.schedulerRegistry.addCronJob(this.jobName, job);
-    if (now >= cronDate) {
-      this.schedulerRegistry.addInterval(this.jobName, job);
-      job.start();
-    }
+    this.schedulerRegistry.addInterval(this.jobName, job);
+
+    await this.prismaService.cronInterval.create({
+      data: {
+        days_week: daysWeek,
+        hours: interval.hours,
+        minutes: interval.minutes,
+        seconds: interval.seconds,
+        start_time: cronDate,
+        end_time: cronDate,
+      },
+    });
 
     return { data: 'Cron Job criado com sucesso!' };
   }
