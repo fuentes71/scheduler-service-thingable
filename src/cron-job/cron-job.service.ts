@@ -95,8 +95,6 @@ export class CronJobService {
         hours: interval.hours,
         minutes: interval.minutes,
         seconds: interval.seconds,
-        start_time: cronDate,
-        end_time: cronDate,
       },
     });
 
